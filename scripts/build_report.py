@@ -566,13 +566,14 @@ slides_list = [
 <p class="lead">Most digital savings products solve the digitization problem.<br/>Alajo Control solves the <b>truth-and-action</b> problem that comes after.</p>
 <div class="foot">Melvin Oshomegie · MGT 409 Final Project · Yale SOM · Oct 2026</div>""", "dark"),
     slide(f"""<h2>The problem</h2>
+<p class="frame">Many Nigerian traders and households earn money in small, irregular amounts. Banks were often hard to reach, inconvenient, or poorly suited to saving small sums every day.</p>
 <div class="prog">
- <div class="prow"><b>Traditional ajo</b><span>cash</span><i>→</i><span>collector</span><i>→</i><span>notebook / passbook</span><i>→</i><span>later payout</span></div>
- <div class="prow"><b>Digital Alajo</b><span>bank / agent payments</span><i>→</i><span>digital ledger</span><i>→</i><span>customer balance</span></div>
- <div class="prow bad"><b>New scaling problem</b><span>bank + provider + agent + customer claims</span><i>≠</i><span>always the same record</span></div>
+ <div class="prow"><b>Before: a trusted collector (“alajo”)</b><span>visits in person</span><i>→</i><span>collects small cash</span><i>→</i><span>writes it in a passbook</span><i>→</i><span>returns the savings later</span></div>
+ <div class="prow"><b>Alajo, the startup I co-founded, moved it online</b><span>bank / agent payments</span><i>→</i><span>digital ledger</span><i>→</i><span>customer sees savings</span></div>
+ <div class="prow bad"><b>New scaling problem</b><span>bank + payment provider + field agent + what customers say they paid</span><i>≠</i><span>always the same record</span></div>
 </div>
-<p class="land">Operations teams must determine what actually happened before they can safely act.</p>
-<p class="mut small">Ajo / esusu: community savings for people with irregular incomes — small fixed amounts, a lump sum later{cite('nbs', 'cgap')}. Informed by my experience co-founding Alajo, a Nigerian digital savings startup.</p>"""),
+<p class="land">Operations teams must reconstruct what actually happened before they can safely update balances, chase genuine missed payments or manage payouts.</p>
+<p class="mut small">It is customers’ savings: a false reminder damages trust, a wrong match corrupts someone’s balance, and unresolved gaps can affect future payouts. This problem is informed by my experience co-founding Alajo, a Nigerian digital savings startup. (The demo uses synthetic data, not Alajo customer records.)</p>"""),
     slide(f"""<h2>The gap</h2><div class="cols"><div class="card"><h3>Existing digital savings tools</h3><p class="mut">AjoMoney, AjoFlow, Ajo app, Cowrywise Circles, PiggyVest…</p>
 <p>Record <b>what should have happened</b>: schedules, groups, wallets, passbooks, reminders, payouts.</p></div>
 <div class="card accent"><h3>Alajo Control</h3><p class="mut">internal operations / finance layer</p><p>Determines <b>what actually happened</b> and <b>what is safe to do next</b>: reconcile conflicting evidence, triage exceptions, see payout risk, act with human approval.</p></div></div>
@@ -631,13 +632,14 @@ section.dark .card {{ background:rgba(255,255,255,.06); border-color:rgba(255,25
 .diagram {{ width:100%; height:auto; max-height:520px; }} .chart {{ width:100%; height:auto; }}
 .stat {{ font-size:19px; margin:0 0 20px; }} .stat span {{ display:block; font-size:44px; font-weight:800; color:#0b7a5f; letter-spacing:-1px; }}
 ol.flow li {{ margin:0 0 14px; }} .cite {{ font-size:12px; vertical-align:super; color:#2a5bb8; text-decoration:none; }}
-.prog {{ display:flex; flex-direction:column; gap:20px; margin-top:16px; }}
-.prow {{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; font-size:22px; }}
-.prow b {{ width:230px; font-size:20px; color:#5b6577; text-transform:uppercase; letter-spacing:.8px; font-size:15px; }}
-.prow span {{ background:#eef1f8; border:1px solid #c7d3ea; color:#15274a; border-radius:12px; padding:10px 18px; font-weight:650; }}
+.prog {{ display:flex; flex-direction:column; gap:16px; margin-top:10px; }}
+.prow {{ display:flex; align-items:center; gap:12px; flex-wrap:nowrap; font-size:18px; }}
+.prow b {{ width:250px; color:#5b6577; text-transform:uppercase; letter-spacing:.6px; font-size:13px; line-height:1.3; }}
+.prow span {{ background:#eef1f8; border:1px solid #c7d3ea; color:#15274a; border-radius:12px; padding:8px 13px; font-weight:650; font-size:16px; white-space:nowrap; }}
 .prow i {{ font-style:normal; font-size:28px; color:#5b6577; }}
 .prow.bad span {{ background:#fbe5e2; border-color:#efbdb6; color:#b3261e; }} .prow.bad i {{ color:#b3261e; font-weight:800; }}
-.land {{ font-size:30px !important; font-weight:750; color:#0a1324; margin-top:44px !important; line-height:1.3; }}
+.land {{ font-size:25px !important; font-weight:750; color:#0a1324; margin-top:26px !important; line-height:1.3; }}
+.frame {{ font-size:21px !important; margin:-6px 0 18px !important; color:#2a3344; }}
 </style></head><body>
 <div class="reveal"><div class="slides">
 {''.join(slides_list)}
