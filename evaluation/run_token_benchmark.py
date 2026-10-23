@@ -249,6 +249,15 @@ async def run() -> dict[str, Any]:
 
 
 def main() -> None:
+    if "--reproject" in sys.argv:
+        # Recompute the scale projections from the stored measurements and the current usage log
+        # (e.g. after Ask runs exist). No model calls.
+        path = config.OUTPUT_DIR / "token_benchmark.json"
+        res = json.loads(path.read_text(encoding="utf-8"))
+        res["projections"], res["projection_basis"] = projections(res["naive"], res["optimized"])
+        path.write_text(json.dumps(res, indent=1, default=str), encoding="utf-8")
+        print([p["label"] for p in res["projections"]])
+        return
     if "--rescore" in sys.argv:
         res = rescore(config.OUTPUT_DIR / "token_benchmark.json")
         print({m: res[m]["unsafe_decisions"] for m in ("naive", "optimized")})

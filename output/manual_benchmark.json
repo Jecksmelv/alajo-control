@@ -1,7 +1,7 @@
 {
  "packet": "evaluation/manual_test_packet/",
  "items": 24,
- "system_seconds": 37.8,
+ "system_seconds": 29.8,
  "system_seconds_basis": "measured optimized benchmark: deterministic engine over the whole demo day + Money Match on the ambiguous items (17 hardest items); the 7 routine items are resolved inside the engine run",
  "human_result": null,
  "summary": "A 24-item packet with the same raw evidence is provided for a timed human baseline. No human test has been run yet, so no human time or accuracy is reported.",

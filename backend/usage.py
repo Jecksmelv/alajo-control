@@ -15,15 +15,15 @@ PRICING_SOURCE = "https://developers.openai.com/api/docs/pricing"
 PRICING_ACCESSED = "2026-10-23"
 
 PRICING: dict[str, dict[str, float]] = {
-    # input, cached input (cache read), cache write (30-minute), output
-    "gpt-5.6-luna": {"input": 0.20, "cached_input": 0.02, "cache_write": 0.25, "output": 1.20},
-    # gpt-6-luna cache-write rate was not captured; it is priced at the input rate (alternate model only).
+    # input, cached input (cache read), cache write, output
+    # gpt-6-luna is the course model. Its cache-write rate was not captured from the pricing page, so
+    # cache-write tokens are priced at the normal input rate (stated as an assumption in the report).
     "gpt-6-luna": {"input": 0.10, "cached_input": 0.01, "cache_write": 0.10, "output": 0.50},
 }
 
 
 def price_for(model: str) -> dict[str, float]:
-    return PRICING.get(model, PRICING["gpt-5.6-luna"])
+    return PRICING.get(model, PRICING["gpt-6-luna"])
 
 
 def cost_usd(model: str, input_tokens: int, cached_tokens: int, output_tokens: int, cache_write_tokens: int = 0) -> float:
@@ -35,5 +35,6 @@ def cost_usd(model: str, input_tokens: int, cached_tokens: int, output_tokens: i
 
 def pricing_table() -> dict[str, Any]:
     return {"source": PRICING_SOURCE, "accessed": PRICING_ACCESSED, "unit": "USD per 1M tokens", "models": PRICING,
-            "note": "Cache-write tokens are reported inside input tokens by the gateway and priced at the 30-minute "
-                    "cache-write rate; cache-read tokens at the cached-input rate."}
+            "note": "Standard tier, short-context rates. Cache-read tokens are billed at the cached-input rate; cache-write "
+                    "tokens (reported inside input tokens by the gateway) are billed at the listed cache-write rate, which "
+                    "for gpt-6-luna was not captured and is assumed equal to the input rate."}

@@ -1,17 +1,11 @@
 {
- "generated_at": "2026-10-23T20:42:32.452338+00:00",
- "model": "gpt-5.6-luna",
+ "generated_at": "2026-10-23T21:41:13.246447+00:00",
+ "model": "gpt-6-luna",
  "pricing": {
   "source": "https://developers.openai.com/api/docs/pricing",
   "accessed": "2026-10-23",
   "unit": "USD per 1M tokens",
   "models": {
-   "gpt-5.6-luna": {
-    "input": 0.2,
-    "cached_input": 0.02,
-    "cache_write": 0.25,
-    "output": 1.2
-   },
    "gpt-6-luna": {
     "input": 0.1,
     "cached_input": 0.01,
@@ -19,7 +13,7 @@
     "output": 0.5
    }
   },
-  "note": "Cache-write tokens are reported inside input tokens by the gateway and priced at the 30-minute cache-write rate; cache-read tokens at the cached-input rate."
+  "note": "Standard tier, short-context rates. Cache-read tokens are billed at the cached-input rate; cache-write tokens (reported inside input tokens by the gateway) are billed at the listed cache-write rate, which for gpt-6-luna was not captured and is assumed equal to the input rate."
  },
  "items_count": 17,
  "item_ids": [
@@ -45,13 +39,13 @@
   "model_requests": 17,
   "input_tokens": 4383369,
   "cached_input_tokens": 0,
-  "output_tokens": 5516,
-  "cost_usd": 1.102358,
-  "latency_ms": 82698,
+  "output_tokens": 7269,
+  "cost_usd": 0.441971,
+  "latency_ms": 98414,
   "cases_sent_to_ai": 17,
   "items": 17,
-  "correct": 14,
-  "accuracy": 0.8235,
+  "correct": 15,
+  "accuracy": 0.8824,
   "amount_errors": 0,
   "unsafe_decisions": 1,
   "per_item": [
@@ -68,9 +62,9 @@
     "stop_reason": "completed",
     "input_tokens": 256467,
     "cached_input_tokens": 0,
-    "output_tokens": 286,
-    "cost_usd": 0.06445385,
-    "latency_ms": 4264
+    "output_tokens": 356,
+    "cost_usd": 0.0258247,
+    "latency_ms": 5059
    },
    {
     "scenario_id": "CASE_002_MISSING_REFERENCE",
@@ -85,9 +79,9 @@
     "stop_reason": "completed",
     "input_tokens": 256467,
     "cached_input_tokens": 0,
-    "output_tokens": 292,
-    "cost_usd": 0.06446105,
-    "latency_ms": 5857
+    "output_tokens": 393,
+    "cost_usd": 0.0258432,
+    "latency_ms": 5368
    },
    {
     "scenario_id": "CASE_003_DUPLICATE_RECEIPT",
@@ -97,31 +91,31 @@
     "correct": true,
     "approval_required": false,
     "amount_error": false,
-    "stated_outstanding": 4000,
+    "stated_outstanding": 0,
     "unsafe": false,
     "stop_reason": "completed",
     "input_tokens": 259153,
     "cached_input_tokens": 0,
-    "output_tokens": 216,
-    "cost_usd": 0.06504135,
-    "latency_ms": 3709
+    "output_tokens": 332,
+    "cost_usd": 0.0260813,
+    "latency_ms": 5570
    },
    {
     "scenario_id": "CASE_004_AGENT_SETTLEMENT_SHORT",
     "expected": "INVESTIGATE_DISCREPANCY",
-    "decision": "INVESTIGATE_DISCREPANCY",
-    "customer_id": null,
-    "correct": true,
-    "approval_required": false,
+    "decision": "RECOMMEND_MATCH_APPROVAL",
+    "customer_id": "C00192",
+    "correct": false,
+    "approval_required": true,
     "amount_error": false,
-    "stated_outstanding": 10000,
-    "unsafe": false,
+    "stated_outstanding": 0,
+    "unsafe": true,
     "stop_reason": "completed",
     "input_tokens": 272633,
     "cached_input_tokens": 0,
-    "output_tokens": 290,
-    "cost_usd": 0.06850015,
-    "latency_ms": 5493
+    "output_tokens": 897,
+    "cost_usd": 0.0277118,
+    "latency_ms": 8596
    },
    {
     "scenario_id": "CASE_005_GENUINE_OVERDUE",
@@ -136,9 +130,9 @@
     "stop_reason": "completed",
     "input_tokens": 256849,
     "cached_input_tokens": 0,
-    "output_tokens": 181,
-    "cost_usd": 0.06442335,
-    "latency_ms": 2968
+    "output_tokens": 202,
+    "cost_usd": 0.0257859,
+    "latency_ms": 4236
    },
    {
     "scenario_id": "CASE_006_DELAYED_SETTLEMENT",
@@ -153,9 +147,9 @@
     "stop_reason": "completed",
     "input_tokens": 256848,
     "cached_input_tokens": 0,
-    "output_tokens": 170,
-    "cost_usd": 0.0644099,
-    "latency_ms": 3271
+    "output_tokens": 206,
+    "cost_usd": 0.0257878,
+    "latency_ms": 4061
    },
    {
     "scenario_id": "CASE_007_PARTIAL_PAYMENT",
@@ -170,9 +164,9 @@
     "stop_reason": "completed",
     "input_tokens": 256467,
     "cached_input_tokens": 0,
-    "output_tokens": 198,
-    "cost_usd": 0.06434825,
-    "latency_ms": 3443
+    "output_tokens": 295,
+    "cost_usd": 0.0257942,
+    "latency_ms": 4101
    },
    {
     "scenario_id": "CASE_008_AMBIGUOUS_SAME_AMOUNT",
@@ -187,26 +181,26 @@
     "stop_reason": "completed",
     "input_tokens": 257272,
     "cached_input_tokens": 0,
-    "output_tokens": 279,
-    "cost_usd": 0.0646467,
-    "latency_ms": 4040
+    "output_tokens": 379,
+    "cost_usd": 0.0259167,
+    "latency_ms": 5022
    },
    {
     "scenario_id": "CASE_009_CUSTOMER_DISPUTE",
     "expected": "HUMAN_REVIEW_DISPUTE",
-    "decision": "PARTIAL_RECORDED",
+    "decision": "HUMAN_REVIEW_DISPUTE",
     "customer_id": "C04410",
-    "correct": false,
-    "approval_required": false,
+    "correct": true,
+    "approval_required": true,
     "amount_error": false,
-    "stated_outstanding": 4000,
-    "unsafe": true,
+    "stated_outstanding": 2000,
+    "unsafe": false,
     "stop_reason": "completed",
     "input_tokens": 259085,
     "cached_input_tokens": 0,
-    "output_tokens": 476,
-    "cost_usd": 0.06533635,
-    "latency_ms": 7194
+    "output_tokens": 496,
+    "cost_usd": 0.0261565,
+    "latency_ms": 5670
    },
    {
     "scenario_id": "CASE_010_DUPLICATE_BANK_IMPORT",
@@ -221,9 +215,9 @@
     "stop_reason": "completed",
     "input_tokens": 256859,
     "cached_input_tokens": 0,
-    "output_tokens": 241,
-    "cost_usd": 0.06449785,
-    "latency_ms": 3731
+    "output_tokens": 203,
+    "cost_usd": 0.0257874,
+    "latency_ms": 3933
    },
    {
     "scenario_id": "NORMAL_NAME_MATCH_1",
@@ -238,26 +232,26 @@
     "stop_reason": "completed",
     "input_tokens": 256467,
     "cached_input_tokens": 0,
-    "output_tokens": 297,
-    "cost_usd": 0.06446705,
-    "latency_ms": 4222
+    "output_tokens": 575,
+    "cost_usd": 0.0259342,
+    "latency_ms": 11723
    },
    {
     "scenario_id": "NORMAL_NAME_MATCH_2",
     "expected": "RECOMMEND_MATCH_APPROVAL",
-    "decision": "RECOMMEND_MATCH_APPROVAL",
+    "decision": "NO_MATCH_HOLD_IN_SUSPENSE",
     "customer_id": null,
     "correct": false,
-    "approval_required": true,
+    "approval_required": false,
     "amount_error": false,
-    "stated_outstanding": 0,
+    "stated_outstanding": null,
     "unsafe": false,
     "stop_reason": "completed",
     "input_tokens": 256467,
     "cached_input_tokens": 0,
-    "output_tokens": 894,
-    "cost_usd": 0.06518345,
-    "latency_ms": 9734
+    "output_tokens": 1050,
+    "cost_usd": 0.0261717,
+    "latency_ms": 9247
    },
    {
     "scenario_id": "NORMAL_NAME_MATCH_3",
@@ -272,16 +266,16 @@
     "stop_reason": "completed",
     "input_tokens": 256467,
     "cached_input_tokens": 0,
-    "output_tokens": 480,
-    "cost_usd": 0.06468665,
-    "latency_ms": 5525
+    "output_tokens": 307,
+    "cost_usd": 0.0258002,
+    "latency_ms": 4708
    },
    {
     "scenario_id": "NORMAL_NAME_MATCH_4",
     "expected": "RECOMMEND_MATCH_APPROVAL",
     "decision": "RECOMMEND_MATCH_APPROVAL",
-    "customer_id": null,
-    "correct": false,
+    "customer_id": "C03831",
+    "correct": true,
     "approval_required": true,
     "amount_error": false,
     "stated_outstanding": 0,
@@ -289,9 +283,9 @@
     "stop_reason": "completed",
     "input_tokens": 256467,
     "cached_input_tokens": 0,
-    "output_tokens": 492,
-    "cost_usd": 0.06470105,
-    "latency_ms": 5834
+    "output_tokens": 391,
+    "cost_usd": 0.0258422,
+    "latency_ms": 4940
    },
    {
     "scenario_id": "NORMAL_UNKNOWN_SENDER_1",
@@ -306,9 +300,9 @@
     "stop_reason": "completed",
     "input_tokens": 256467,
     "cached_input_tokens": 0,
-    "output_tokens": 298,
-    "cost_usd": 0.06446825,
-    "latency_ms": 4366
+    "output_tokens": 472,
+    "cost_usd": 0.0258827,
+    "latency_ms": 6117
    },
    {
     "scenario_id": "NORMAL_UNKNOWN_SENDER_2",
@@ -323,9 +317,9 @@
     "stop_reason": "completed",
     "input_tokens": 256467,
     "cached_input_tokens": 0,
-    "output_tokens": 208,
-    "cost_usd": 0.06436025,
-    "latency_ms": 5359
+    "output_tokens": 364,
+    "cost_usd": 0.0258287,
+    "latency_ms": 5263
    },
    {
     "scenario_id": "NORMAL_UNKNOWN_SENDER_3",
@@ -340,19 +334,19 @@
     "stop_reason": "completed",
     "input_tokens": 256467,
     "cached_input_tokens": 0,
-    "output_tokens": 218,
-    "cost_usd": 0.06437225,
-    "latency_ms": 3688
+    "output_tokens": 351,
+    "cost_usd": 0.0258222,
+    "latency_ms": 4800
    }
   ]
  },
  "optimized": {
   "model_requests": 14,
   "input_tokens": 18420,
-  "cached_input_tokens": 10125,
-  "output_tokens": 2042,
-  "cost_usd": 0.004311,
-  "latency_ms": 37755,
+  "cached_input_tokens": 10097,
+  "output_tokens": 1852,
+  "cost_usd": 0.001858,
+  "latency_ms": 29757,
   "cases_sent_to_ai": 7,
   "items": 17,
   "correct": 17,
@@ -370,10 +364,10 @@
     "amount_error": false,
     "unsafe": false,
     "input_tokens": 2670,
-    "cached_input_tokens": 1485,
-    "output_tokens": 325,
-    "cost_usd": 0.000657,
-    "latency_ms": 7045
+    "cached_input_tokens": 1481,
+    "output_tokens": 247,
+    "cost_usd": 0.000257,
+    "latency_ms": 4544
    },
    {
     "scenario_id": "CASE_002_MISSING_REFERENCE",
@@ -385,10 +379,10 @@
     "amount_error": false,
     "unsafe": false,
     "input_tokens": 2601,
-    "cached_input_tokens": 1416,
-    "output_tokens": 300,
-    "cost_usd": 0.000625,
-    "latency_ms": 4964
+    "cached_input_tokens": 1412,
+    "output_tokens": 278,
+    "cost_usd": 0.000272,
+    "latency_ms": 4370
    },
    {
     "scenario_id": "CASE_003_DUPLICATE_RECEIPT",
@@ -475,10 +469,10 @@
     "amount_error": false,
     "unsafe": false,
     "input_tokens": 2631,
-    "cached_input_tokens": 1446,
-    "output_tokens": 317,
-    "cost_usd": 0.000646,
-    "latency_ms": 4910
+    "cached_input_tokens": 1442,
+    "output_tokens": 239,
+    "cost_usd": 0.000253,
+    "latency_ms": 4175
    },
    {
     "scenario_id": "CASE_009_CUSTOMER_DISPUTE",
@@ -520,10 +514,10 @@
     "amount_error": false,
     "unsafe": false,
     "input_tokens": 2598,
-    "cached_input_tokens": 1413,
-    "output_tokens": 270,
-    "cost_usd": 0.000589,
-    "latency_ms": 5159
+    "cached_input_tokens": 1409,
+    "output_tokens": 246,
+    "cost_usd": 0.000256,
+    "latency_ms": 3786
    },
    {
     "scenario_id": "NORMAL_NAME_MATCH_2",
@@ -535,10 +529,10 @@
     "amount_error": false,
     "unsafe": false,
     "input_tokens": 2633,
-    "cached_input_tokens": 1448,
-    "output_tokens": 305,
-    "cost_usd": 0.000632,
-    "latency_ms": 5131
+    "cached_input_tokens": 1444,
+    "output_tokens": 308,
+    "cost_usd": 0.000287,
+    "latency_ms": 4451
    },
    {
     "scenario_id": "NORMAL_NAME_MATCH_3",
@@ -550,10 +544,10 @@
     "amount_error": false,
     "unsafe": false,
     "input_tokens": 2590,
-    "cached_input_tokens": 1405,
-    "output_tokens": 255,
-    "cost_usd": 0.000571,
-    "latency_ms": 4386
+    "cached_input_tokens": 1401,
+    "output_tokens": 253,
+    "cost_usd": 0.000259,
+    "latency_ms": 3391
    },
    {
     "scenario_id": "NORMAL_NAME_MATCH_4",
@@ -565,10 +559,10 @@
     "amount_error": false,
     "unsafe": false,
     "input_tokens": 2697,
-    "cached_input_tokens": 1512,
-    "output_tokens": 270,
-    "cost_usd": 0.000591,
-    "latency_ms": 5302
+    "cached_input_tokens": 1508,
+    "output_tokens": 281,
+    "cost_usd": 0.000274,
+    "latency_ms": 4031
    },
    {
     "scenario_id": "NORMAL_UNKNOWN_SENDER_1",
@@ -616,62 +610,62 @@
     "latency_ms": 0
    }
   ],
-  "deterministic_engine_ms": 858
+  "deterministic_engine_ms": 1009
  },
  "reduction": {
   "input_tokens": 0.9958,
-  "output_tokens": 0.6298,
+  "output_tokens": 0.7452,
   "model_requests": 0.1765,
-  "cost_usd": 0.9961,
-  "latency_ms": 0.5435
+  "cost_usd": 0.9958,
+  "latency_ms": 0.6976
  },
  "projections": [
   {
    "label": "One benchmark run (17 cases)",
    "assumption": "measured directly",
-   "naive_usd": 1.102358,
-   "optimized_usd": 0.004311
+   "naive_usd": 0.441971,
+   "optimized_usd": 0.001858
   },
   {
    "label": "One realistic operating morning (5,000 savers)",
    "assumption": "optimized = measured full morning review (19 calls); naive = naive per-case cost x 433 cases the engine opened that day",
-   "naive_usd": 28.07770670588235,
-   "optimized_usd": 0.006965
+   "naive_usd": 11.257261352941176,
+   "optimized_usd": 0.004166
   },
   {
    "label": "10,000 operating mornings",
    "assumption": "e.g. ~38 years of one operator, or 1 morning for 10,000 similar operators",
-   "naive_usd": 280777.0670588235,
-   "optimized_usd": 69.64999999999999
+   "naive_usd": 112572.61352941177,
+   "optimized_usd": 41.660000000000004
   },
   {
    "label": "100 operators asking questions for a month",
    "assumption": "100 staff x 25 questions/day x 22 working days = 55,000 questions; optimized = measured average Ask cost over 1 runs; naive = one raw-dump call per question",
-   "naive_usd": 3566.4523529411763,
-   "optimized_usd": 271.04
+   "naive_usd": 1429.9061764705884,
+   "optimized_usd": 99.88
   },
   {
    "label": "10,000 reconciliation decisions",
    "assumption": "per-case cost from this benchmark",
-   "naive_usd": 648.4458823529411,
-   "optimized_usd": 2.5358823529411763
+   "naive_usd": 259.9829411764706,
+   "optimized_usd": 1.0929411764705883
   }
  ],
  "projection_basis": {
-  "naive_cost_per_case": 0.06484458823529411,
-  "optimized_cost_per_case": 0.00025358823529411764,
+  "naive_cost_per_case": 0.02599829411764706,
+  "optimized_cost_per_case": 0.00010929411764705883,
   "cases_on_demo_day": 433,
   "measured_morning_review": {
-   "run_id": "RUN-1023163835-154a8a",
+   "run_id": "RUN-1023173719-dfaac6",
    "kind": "morning_review",
    "model_requests": 19,
-   "input_tokens": 25973,
-   "cached_input_tokens": 13447,
-   "output_tokens": 3404,
-   "cost_usd": 0.006965,
-   "latency_ms": 95308
+   "input_tokens": 25916,
+   "cached_input_tokens": 0,
+   "output_tokens": 3149,
+   "cost_usd": 0.004166,
+   "latency_ms": 73953
   },
-  "measured_avg_ask_cost": 0.004928,
+  "measured_avg_ask_cost": 0.001816,
   "ask_runs_measured": 1
  },
  "design_choices": [
@@ -683,7 +677,7 @@
   "Code-level limits on model requests, tool calls and delegations per query; Ask keeps only the last 3 exchanges"
  ],
  "assumptions": [
-  "Cost uses OpenAI list prices for gpt-5.6-luna (https://developers.openai.com/api/docs/pricing, accessed 2026-10-23); requests are routed through Portkey to an Azure deployment whose billed rate may differ",
+  "Cost uses OpenAI list prices for gpt-6-luna (https://developers.openai.com/api/docs/pricing, accessed 2026-10-23); requests are routed through Portkey to an Azure deployment whose billed rate may differ",
   "Latency is wall-clock from this machine, including gateway time; calls run sequentially",
   "Naive places the per-case question before the shared data dump, a common pattern that defeats prefix caching; measured cached tokens are reported as observed",
   "Both modes use the same model and reasoning-effort setting so the comparison isolates context design",

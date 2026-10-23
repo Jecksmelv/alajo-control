@@ -34,7 +34,7 @@ AUDIT_DB_PATH = Path(os.environ.get("ALAJO_AUDIT_DB_PATH", DATA_DIR / "audit.db"
 # ---------------------------------------------------------------------------
 # Model wiring (Portkey gateway, OpenAI-compatible Responses API)
 # ---------------------------------------------------------------------------
-MODEL_NAME = os.environ.get("ALAJO_MODEL", "gpt-5.6-luna")
+MODEL_NAME = os.environ.get("ALAJO_MODEL", "gpt-6-luna")   # course requirement: gpt-6-luna only
 PORTKEY_BASE_URL = os.environ.get("PORTKEY_BASE_URL", "https://api.portkey.ai/v1")
 PORTKEY_PROVIDER = os.environ.get("PORTKEY_PROVIDER", "openai")
 
