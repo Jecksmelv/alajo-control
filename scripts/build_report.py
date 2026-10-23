@@ -278,6 +278,34 @@ def figure(name: str, caption: str, cls: str = "") -> str:
 naive_wrong = [p for p in nv["per_item"] if not p["correct"]]
 naive_unsafe = [p for p in nv["per_item"] if p["unsafe"]]
 
+# Operational impact, all computed from the deterministic snapshot and measured result files
+_cc = {c["case_type"]: c for c in case_counts}
+records_in = sum(reset["counts"][k] for k in ("bank_transactions", "provider_settlements", "agent_collections", "messages"))
+human_items = S["open_exceptions"]
+approvals_n = int(re.search(r"(\d+) approval items", M["safe_actions"]["detail"]).group(1))
+work_reduction = 1 - human_items / records_in
+dup_amt = sum(_cc[k]["amt"] for k in ("DUPLICATE_IMPORT", "DUPLICATE_RECEIPT") if k in _cc)
+short_amt = _cc.get("AGENT_SHORTFALL", {}).get("amt", 0)
+delayed_amt = _cc.get("PROVIDER_SETTLEMENT_DELAYED", {}).get("amt", 0)
+fri = next(d for d in OB["by_day"] if d["due_date"] == P["gap_date"])
+overdue_cases = _cc.get("OVERDUE_FOLLOWUP", {}).get("n", 0)
+# Illustrative time estimate (assumptions, not measurements)
+_scen = [("Low", 0.5, 8, 3), ("Mid", 1.0, 12, 4), ("High", 2.0, 20, 5)]
+est_rows = ""
+for label, per_rec, per_exc, per_exc_sys in _scen:
+    manual_h = (records_in * per_rec + human_items * per_exc) / 60
+    system_h = (human_items * per_exc_sys) / 60
+    est_rows += (f"<tr><td>{label}</td><td class='num'>{per_rec:g} min</td><td class='num'>{per_exc} min</td><td class='num'>{per_exc_sys} min</td>"
+                 f"<td class='num'>{manual_h:.1f} h</td><td class='num'>{system_h:.1f} h</td><td class='num'><b>{manual_h - system_h:.1f} h</b></td>"
+                 f"<td class='num'>{(manual_h - system_h) * 260:,.0f} h</td></tr>")
+# Per user / month at scale: one operator = one morning review + 25 Ask questions per working day, 22 days
+_naive_pc = nv["cost_usd"] / max(1, nv["items"])
+_cases_day = TB["projection_basis"]["cases_on_demo_day"]
+per_user_opt = 22 * (mr["cost_usd"] + 25 * ask_avg_cost)
+per_user_naive = 22 * (_naive_pc * _cases_day + 25 * _naive_pc)
+user_rows = "".join(f"<tr><td><b>{lab}</b></td><td class='num'>{usd(per_user_naive * k, 2)}</td><td class='num'><b>{usd(per_user_opt * k, 2)}</b></td></tr>"
+                    for lab, k in (("1 user / month", 1), ("100 users / month", 100), ("10,000 users / month", 10_000)))
+
 
 def _desc(p):
     return f"{p['scenario_id'].replace('_', ' ').title().replace('Case ', 'CASE_')} (expected {p['expected']}, got {p['decision']})"
@@ -300,7 +328,7 @@ quality_sentence += (f"The naive prompts averaged {n(_avg_naive)} input tokens; 
 quality_sentence = esc(quality_sentence)
 safety_rows = "".join(
     f"<tr><td><b>{esc(t['title'])}</b><div class='mut'>{esc(t['attack'][:170])}</div></td><td>{esc(t['expected_behavior'])}</td>"
-    f"<td>{esc(clean(t['actual_behavior'], 420))}</td><td>{esc(t['defense'])}</td><td class='{'ok' if t['passed'] else 'bad'}'>{'PASS' if t['passed'] else 'FAIL'}</td></tr>"
+    f"<td>{esc(clean(t['actual_behavior'], 230))}</td><td>{esc(t['defense'])}</td><td class='{'ok' if t['passed'] else 'bad'}'>{'PASS' if t['passed'] else 'FAIL'}</td></tr>"
     for t in SF["tests"])
 scen_rows = "".join(
     f"<tr><td>{esc(s['scenario_id'].replace('_', ' ').title().replace('Case ', 'CASE ', 1))}</td><td class='mono'>{esc(s['expected_disposition'])}</td>"
@@ -358,6 +386,7 @@ figcaption {{ font-size:12px; color:var(--muted); margin-top:6px; }}
 .toc {{ columns:2; font-size:13.5px; }} .toc a {{ color:var(--ink); text-decoration:none; }}
 .badge {{ display:inline-block; padding:1px 8px; border-radius:99px; font-size:11px; font-weight:700; background:#e3f2ec; color:var(--em); }}
 .missing {{ color:var(--red); }}
+table.est th, table.est td {{ white-space:normal !important; }}
 ol.journey {{ padding-left:20px; }} ol.journey li {{ margin:6px 0; }}
 .flowline {{ display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin:8px 0; font-size:13px; color:#5b6577; }}
 .flowline span {{ background:#eef1f8; border:1px solid #c7d3ea; color:#15274a; border-radius:8px; padding:4px 10px; font-weight:600; }}
@@ -369,12 +398,13 @@ table.compact {{ font-size:11.8px; }} table.compact td {{ padding:5px 7px; }}
 .two.tight {{ align-items:start; }}
 figure.half img {{ max-height:420px; object-fit:cover; object-position:top; }}
 code {{ font-family:"IBM Plex Mono",Consolas,monospace; font-size:12px; background:#f4efe5; padding:1px 5px; border-radius:4px; }}
-@page {{ margin: 13mm 12mm; }}
-@media print {{ body {{ background:#fff; font-size:10pt; line-height:1.42; }} .page {{ box-shadow:none; padding:0; max-width:none; }}
+@page {{ margin: 10mm 11mm; }}
+@media print {{ body {{ background:#fff; font-size:9.6pt; line-height:1.38; }} .page {{ box-shadow:none; padding:0; max-width:none; }}
  .cover {{ margin:0; padding:34px 30px 28px; -webkit-print-color-adjust:exact; print-color-adjust:exact; }} .cover h1 {{ font-size:36px; }}
  h2 {{ margin:20px 0 8px; padding-top:10px; font-size:17pt; break-after:avoid; }} h3 {{ break-after:avoid; margin:14px 0 6px; }}
- figure {{ margin:8px 0 10px; break-inside:avoid; }} figure img {{ max-height:96mm; object-fit:contain; box-shadow:none; }} .two figure img {{ max-height:62mm; }}
+ figure {{ margin:8px 0 10px; break-inside:avoid; }} figure img {{ max-height:72mm; object-fit:contain; box-shadow:none; }} .two figure img {{ max-height:44mm; }}
  figcaption {{ font-size:8pt; }} table {{ font-size:8.4pt; }} td, th {{ padding:4px 6px; }} table.compact {{ font-size:7.8pt; }}
+ ol.refs {{ columns:2; column-gap:18px; font-size:7.6pt; }} ol.refs li {{ margin:2px 0; break-inside:avoid; }}
  .kpi .v {{ font-size:15pt; }} .callout, svg, .kpis, .steps > li {{ break-inside:avoid; }} * {{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }} }}
 </style></head><body><div class="page">
 
@@ -440,6 +470,16 @@ code {{ font-family:"IBM Plex Mono",Consolas,monospace; font-size:12px; backgrou
 </tbody></table>
 <p class="quote">Existing digital savings tools help record what should have happened. Alajo Control determines what actually happened and what the business should safely do next.</p>
 <p>The novelty claim is deliberately narrow. Alajo Control is not another savings app and not a chatbot: it is the back-office layer that resolves <i>conflicting operational evidence</i> after digitization — reconciliation across sources, exception triage, short-term payout visibility, and controlled AI action with human approval. It complements, rather than competes with, customer-facing tools like those above. We found no public description of this operational-control layer in the products reviewed; that is a statement about public materials, not about their internal tools.</p>
+<h3>Why not just paste the data into ChatGPT?</h3>
+<p>We measured exactly that. The naive baseline in §5 is a general chatbot given the morning's raw exports and asked what to do with each case. On the same 17 cases it was right {pct(nv['accuracy'], 0)} of the time, made {nv['unsafe_decisions']} unsafe decision(s), read {n(nv['input_tokens'])} input tokens and cost {usd(nv['cost_usd'])} — and it has no approval gate, no audit trail and no way to act. Alajo Control was right {pct(op['accuracy'], 0)} of the time with {op['unsafe_decisions']} unsafe decisions for {usd(op['cost_usd'])}. The difference is the design, not the model: both used {esc(config.MODEL_NAME)}.</p>
+<table class="compact"><thead><tr><th>Capability</th><th>Digital savings apps (public features)</th><th>Chatbot over raw exports (measured)</th><th>Alajo Control (measured)</th></tr></thead><tbody>
+<tr><td>Digital schedules, balances, reminders</td><td>Yes</td><td>—</td><td>Uses the existing ledger</td></tr>
+<tr><td>Reconcile ledger vs bank, provider, agent cash and customer claims</td><td>Not described</td><td>{pct(nv['accuracy'], 0)} correct on 17 cases</td><td><b>{pct(op['accuracy'], 0)} correct</b>; exact rules first, AI only for ambiguity</td></tr>
+<tr><td>Hold a reminder when payment evidence exists</td><td>Reminders described; evidence check not described</td><td>No workflow</td><td><b>{n(pop['false_reminders_prevented'])} false reminders prevented, {n(pop['system_false_reminders'])} sent</b></td></tr>
+<tr><td>Short-term payout risk and which cases close the gap</td><td>Not described</td><td>No</td><td>Deterministic 7-day projection</td></tr>
+<tr><td>Code-enforced human approval + audit trail</td><td>—</td><td>None ({nv['unsafe_decisions']} unsafe decision(s))</td><td><b>{M['safe_actions']['display']} unsafe automated actions</b></td></tr>
+</tbody></table>
+<p>The same pattern — deterministic matching first, AI for the ambiguous remainder, humans for anything material — could apply to any organisation that collects small, frequent payments through several channels: cooperatives, microfinance lenders, school-fee collection, or pay-as-you-go utilities.</p>
 
 <h2 id="s4"><span class="no">4</span>The agents</h2>
 <h3>4.1 Product experience</h3>
@@ -449,10 +489,11 @@ code {{ font-family:"IBM Plex Mono",Consolas,monospace; font-size:12px; backgrou
 <div class="two">{figure('02_reconciliation.jpg', 'Reconciliation: unresolved cases with expected vs candidate amounts, source, status/confidence, priority and recommended action.')}{figure('03_spouse_case_why.jpg', 'The “Why?” view for the spouse-account case: ledger, transfer, the customer’s own message (labelled untrusted), timing, conflict check and the Money Match judgment.')}</div>
 <div class="two">{figure('04_approvals.jpg', 'Approvals queue: proposed action, case, amount, evidence, agent recommendation, confidence and the reason approval is required.')}{figure('07_outbox.jpg', 'Simulated Outbox: recipient, reason, channel, generated content (English or Nigerian Pidgin), originating case, automated vs approval-triggered.')}</div>
 <div class="two">{figure('08_liquidity.jpg', 'Liquidity & Payouts: deterministic 7-day projection, base case vs “if unresolved inflows resolve,” and the Liquidity agent’s grounded explanation.')}{figure('11_ask.jpg', 'Ask Alajo Control: the Supervisor delegates to specialists; case and customer ids link into the app; a badge shows whether every naira figure was traced to a tool.')}</div>
-<div class="two">{figure('10_customer_360.jpg', 'Customer 360: plan, expected vs received contributions, ledger history, messages, “Why is this customer flagged?”, upcoming payout and action history.')}{figure('06b_reminder_held_settlement.jpg', 'A reminder the gate refuses: the ledger says Halima Yusuf is unpaid, but her card payment is settling inside the T+1 window.')}</div>
+<p>Customer 360 pages show each saver's plan, expected vs received contributions, ledger history, messages and “Why is this customer flagged?”; when the ledger says a saver is unpaid but evidence says otherwise (e.g. a card payment still settling), the reminder gate refuses to send a reminder.</p>
 
 <h3>4.2 Agent architecture</h3>
 {ARCH_SVG}
+<p><b>Model choice.</b> Every agent uses {esc(config.MODEL_NAME)}: the course Portkey key supports it, and its low list price (${price['input']:.2f} input / ${price['cached_input']:.2f} cached / ${price['output']:.2f} output per 1M tokens) plus automatic prefix caching suit many small, structured judgment calls. The design does not depend on a stronger model because all money arithmetic and matching rules are deterministic; the model only weighs evidence the code has already assembled.</p>
 <p>The separation is functional, not cosmetic: each agent has its own system prompt (after a shared safety preamble), its own tools and a validated structured output.</p>
 <table><thead><tr><th>Agent</th><th>Question</th><th>Tools (all deterministic)</th><th>Output</th></tr></thead><tbody>
 <tr><td><b>Supervisor</b></td><td>Which specialists does this need?</td><td>get_portfolio_summary, find_customer, get_customer_overview, get_case_summary, list_cases, ask_money_match, ask_exception_risk, ask_liquidity, ask_customer_action</td><td>SupervisorAnswer (answer, cited cases/customers, specialists, figures_verified)</td></tr>
@@ -461,8 +502,7 @@ code {{ font-family:"IBM Plex Mono",Consolas,monospace; font-size:12px; backgrou
 <tr><td><b>Liquidity &amp; Payout</b></td><td>Can we meet obligations?</td><td>calculate_liquidity_projection, get_unresolved_inflows, calculate_payout_obligations</td><td>LiquidityBrief (headline, explanation, key cases, figures_verified)</td></tr>
 <tr><td><b>Customer Action</b></td><td>What should happen next?</td><td>get_action_queue, get_customer_messages, get_customer_cases, queue_routine_reminders, send_customer_message, create_internal_task, request_approval, apply_ledger_change (always refused without human approval)</td><td>ActionPlanResult (messages, tasks, approvals, blocked actions)</td></tr>
 </tbody></table>
-<p><b>Deterministic first.</b> The engine runs its rules in order (duplicates → agent batches → exact references → provider settlements → unmatched transfers with candidate signals → message intents → verified overdue with suppression). On the demo day it opened {n(R['cases_created'])} cases; only the genuinely ambiguous transfer cases reach Money Match. Priority scores, outstanding amounts, days late, shortfalls and the liquidity projection are all SQL/Python.</p>
-<table class="compact"><thead><tr><th>Case type opened by the engine</th><th class="num">Cases</th><th class="num">Amount</th></tr></thead><tbody>{case_rows}</tbody></table>
+<div class="two tight"><div><p><b>Deterministic first.</b> The engine runs its rules in order (duplicates → agent batches → exact references → provider settlements → unmatched transfers with candidate signals → message intents → verified overdue with suppression). On the demo day it opened {n(R['cases_created'])} cases; only the genuinely ambiguous transfer cases reach Money Match. Priority scores, outstanding amounts, days late, shortfalls and the liquidity projection are all SQL/Python.</p></div><div><table class="compact"><thead><tr><th>Case type opened by the engine</th><th class="num">Cases</th><th class="num">Amount</th></tr></thead><tbody>{case_rows}</tbody></table></div></div>
 <p><b>Handoffs and approval control.</b> In Ask, the Supervisor chooses specialists through delegation tools (each specialist runs its own loop with its own usage accounting; delegation is capped at {config.MAX_DELEGATIONS_PER_QUERY} per query). The morning review is a code-orchestrated sequence so it is reproducible. A Money Match decision is validated in code (the customer and contribution must be one of the deterministic candidates; the matched amount is taken from SQL, not the model) and becomes an approval request. A deterministic policy router guarantees that every agent shortfall, dispute and duplicate also gets an approval item. The approval HTTP endpoint is the only code path that executes a material action; it records a human actor and re-verifies the facts before posting.</p>
 
 <h3>4.3 One end-to-end real run: the spouse-account payment</h3>
@@ -493,7 +533,9 @@ code {{ font-family:"IBM Plex Mono",Consolas,monospace; font-size:12px; backgrou
 </tbody></table><p class="mut">Optimized latency includes {op['deterministic_engine_ms'] / 1000:.1f} s for the deterministic engine over the whole day. “Unsafe” = acting on the decision would wrongly change money, the ledger or a customer message without a human.</p></div></div>
 <p><b>Did optimization cost quality?</b> {quality_sentence}</p>
 <h3>What does it cost to operate?</h3>
-<table><thead><tr><th>Scenario</th><th class="num">Naive</th><th class="num">Optimized</th></tr></thead><tbody>{proj_rows}</tbody></table>
+<div class="two tight"><div><table><thead><tr><th>Per user and at scale</th><th class="num">Naive</th><th class="num">Optimized</th></tr></thead><tbody>{user_rows}</tbody></table>
+<p class="mut">A “user” is one operations staff member who runs one morning review and asks 25 questions per working day, 22 days a month. Optimized uses the measured morning review ({usd(mr['cost_usd'])}) and the measured average Ask cost ({usd(ask_avg_cost)}); naive uses the measured naive cost per case for the {n(_cases_day)} cases of the demo day plus one naive call per question. Assumption-based projections of measured costs.</p></div>
+<div><table><thead><tr><th>Other scenarios</th><th class="num">Naive</th><th class="num">Optimized</th></tr></thead><tbody>{proj_rows}</tbody></table></div></div>
 <p>One realistic operating morning for a 5,000-saver book — the full optimized review measured above — costs about <b>{usd(mr['cost_usd'])}</b>, and an average Ask question about {usd(ask_avg_cost)} ({len(asks)} measured runs, {ask_avg_lat:.0f} s average). The projections multiply measured costs; they are scenarios, not measurements. Design choices that reduced cost: {'; '.join(esc(x) for x in TB['design_choices'][:4])}.</p>
 
 <h2 id="s6"><span class="no">6</span>Safety</h2>
@@ -509,6 +551,17 @@ code {{ font-family:"IBM Plex Mono",Consolas,monospace; font-size:12px; backgrou
 {figure('13_safety_lab.jpg', 'Safety Lab: the live prompt-injection and social-engineering tests against the weak and hardened configurations.', 'half')}
 
 <h2 id="s7"><span class="no">7</span>Impact</h2>
+<h3>Operational impact on the demo morning (measured from the app)</h3>
+<div class="kpis">
+ <div class="kpi g"><div class="l">Overnight records to check</div><div class="v">{n(records_in)} → {n(human_items)}</div><div class="s">bank, provider, agent and message records vs. open exceptions left for a human ({pct(work_reduction)} fewer items)</div></div>
+ <div class="kpi g"><div class="l">Records posted with zero model calls</div><div class="v">{n(R['auto_reconciled_count'])}</div><div class="s">{N(R['auto_reconciled_amount'])} matched by exact rules</div></div>
+ <div class="kpi g"><div class="l">Human decisions queued</div><div class="v">{approvals_n}</div><div class="s">approvals, each with evidence and a recommendation</div></div>
+ <div class="kpi r"><div class="l">Payout risk surfaced early</div><div class="v">{N(gap)}</div><div class="s">gap before {fri['payouts']} payouts ({N(fri['amount'])}) on {datetime.fromisoformat(P['gap_date']).strftime('%a %d %b')}, two days ahead</div></div>
+</div>
+<p>Money protected on one morning: {N(dup_amt)} of double credits blocked (duplicate receipt and duplicate bank import), a {N(short_amt)} field-agent cash shortfall caught before the collections were credited, and a {N(delayed_amt)} late provider settlement escalated before Friday's payouts. Reminders went only to verified arrears, so savers who had already paid were not chased.</p>
+<p><b>Illustrative time estimate (assumptions, not measurements).</b> To turn the measured workload into hours, assume an analyst needs a fixed number of minutes to check each overnight record by hand, more time to investigate each exception, and less time to review an exception when the evidence is already assembled. The ranges below are assumptions; the manual packet below exists to replace them with a measured number.</p>
+<table class="compact est"><thead><tr><th>Case</th><th class="num">Min / record, manual</th><th class="num">Min / exception, manual</th><th class="num">Min / exception, with system</th><th class="num">Hours / day, manual</th><th class="num">Hours / day, with system</th><th class="num">Saved / day</th><th class="num">Saved / year (260 days)</th></tr></thead><tbody>{est_rows}</tbody></table>
+<h3>Decision quality against ground truth</h3>
 <p>Because the dataset is synthetic, every planted scenario has a known correct outcome, stored only in <code>evaluation/ground_truth.json</code> and never shown to agents. The evaluation (<code>python -m evaluation.run_evaluation</code>) resets the demo, runs the full optimized morning review with live {esc(config.MODEL_NAME)} calls, attempts the CASE_013 balance change through Ask, then scores each scenario from database state.</p>
 <div class="kpis">
  <div class="kpi g"><div class="l">{esc(M['reconciliation_accuracy']['label'])}</div><div class="v">{M['reconciliation_accuracy']['display']}</div></div>
@@ -577,7 +630,8 @@ slides_list = [
     slide(f"""<h2>The gap</h2><div class="cols"><div class="card"><h3>Existing digital savings tools</h3><p class="mut">AjoMoney, AjoFlow, Ajo app, Cowrywise Circles, PiggyVest…</p>
 <p>Record <b>what should have happened</b>: schedules, groups, wallets, passbooks, reminders, payouts.</p></div>
 <div class="card accent"><h3>Alajo Control</h3><p class="mut">internal operations / finance layer</p><p>Determines <b>what actually happened</b> and <b>what is safe to do next</b>: reconcile conflicting evidence, triage exceptions, see payout risk, act with human approval.</p></div></div>
-<p class="lead small">Not a savings app. Not a chatbot. A control tower for the people who keep the ledger true.</p>"""),
+<p class="lead small">Not a savings app. Not a chatbot. A control tower for the people who keep the ledger true.</p>
+<p class="cap">Measured on the same 17 cases with {esc(config.MODEL_NAME)}: chatbot over raw exports {pct(nv['accuracy'], 0)} correct, {nv['unsafe_decisions']} unsafe, {usd(nv['cost_usd'])} · Alajo Control {pct(op['accuracy'], 0)} correct, {op['unsafe_decisions']} unsafe, {usd(op['cost_usd'])}.</p>"""),
     slide(f"""<h2>The product: Morning Control Room</h2><img class="shot" src="{img('01_control_room.jpg')}"/>
 <p class="cap">Real figures from SQLite: {N(S['expected_today']['amount'])} due today · {N(S['reconciled_this_morning']['amount'])} reconciled by rules · {N(S['unmatched_inflows']['amount'])} in suspense · payout gap {N(gap)} on Fri 23 Oct.</p>"""),
     slide(f"""<h2>How it works</h2>{ARCH_SVG}<p class="cap">Deterministic engine resolves {n(R['auto_reconciled_count'])} records with zero model calls · AI only for genuinely ambiguous cases · approvals enforced in code.</p>"""),
@@ -596,7 +650,7 @@ slides_list = [
     slide(f"""<h2>Safety + impact — measured</h2><div class="cols"><div><div class="stat"><span>{sf_pass}/{sf_total}</span> red-team tests passed</div>
 <p>Social-engineering attack — weak config: {esc(('called ' + ', '.join(sorted({c['tool'] for c in soc['weak']['tool_calls']})) + ' (sandbox only)') if soc['weak']['compromised'] else 'did not act in this run')}. Hardened: ledger unchanged, {len([t for t in soc['hardened']['tool_calls'] if t.get('status') == 'blocked'])} attempt(s) blocked by code.</p>
 <p class="mut small">Also: injection, agent-note override, unapproved balance change, privacy, prompt/key extraction, tool failure, loop, direct DB tampering.</p></div>
-<div><div class="stat"><span>{EV['summary']['passed']}/{EV['summary']['total']}</span> ground-truth scenarios</div><div class="stat"><span>{n(pop['false_reminders_prevented'])}</span> false reminders prevented ({n(pop['system_false_reminders'])} sent)</div><div class="stat"><span>{M['false_matches']['display']}</span> false matches · <span>{M['safe_actions']['display']}</span> unsafe actions</div></div></div>"""),
+<div><div class="stat"><span>{EV['summary']['passed']}/{EV['summary']['total']}</span> ground-truth scenarios</div><div class="stat"><span>{n(pop['false_reminders_prevented'])}</span> false reminders prevented ({n(pop['system_false_reminders'])} sent)</div><div class="stat"><span>{n(records_in)} → {n(human_items)}</span> overnight records vs. items left for a human</div><div class="stat"><span>{N(gap)}</span> payout gap flagged two days early</div></div></div>"""),
     slide(f"""<h2>Why it matters · next step</h2><div class="cols"><div><p class="lead small">Community savings is a trust business; the ledger is the record of that trust. Alajo Control keeps it true at scale — for about {usd(mr['cost_usd'], 3)} of AI per morning.</p>
 <p><b>Limits:</b> synthetic data · simulated WhatsApp &amp; provider feeds · heuristic name matching · no human timing test yet.</p></div>
 <div class="card accent"><h3>Next</h3><ul><li>Pilot with an operator's ops team; run the manual-vs-system protocol</li><li>Real provider + bank statement APIs; WhatsApp Business outbox</li><li>Stronger entity resolution; continuous evaluation</li><li>Yoruba, Hausa, Igbo communication</li></ul></div></div>
