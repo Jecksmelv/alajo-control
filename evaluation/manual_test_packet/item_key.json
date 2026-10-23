@@ -1,0 +1,98 @@
+[
+ {
+  "item": "01",
+  "scenario_id": "CASE_001_SPOUSE_ACCOUNT_PAYMENT"
+ },
+ {
+  "item": "02",
+  "scenario_id": "CASE_002_MISSING_REFERENCE"
+ },
+ {
+  "item": "03",
+  "scenario_id": "CASE_003_DUPLICATE_RECEIPT"
+ },
+ {
+  "item": "04",
+  "scenario_id": "CASE_004_AGENT_SETTLEMENT_SHORT"
+ },
+ {
+  "item": "05",
+  "scenario_id": "CASE_005_GENUINE_OVERDUE"
+ },
+ {
+  "item": "06",
+  "scenario_id": "CASE_006_DELAYED_SETTLEMENT"
+ },
+ {
+  "item": "07",
+  "scenario_id": "CASE_007_PARTIAL_PAYMENT"
+ },
+ {
+  "item": "08",
+  "scenario_id": "CASE_008_AMBIGUOUS_SAME_AMOUNT"
+ },
+ {
+  "item": "09",
+  "scenario_id": "CASE_009_CUSTOMER_DISPUTE"
+ },
+ {
+  "item": "10",
+  "scenario_id": "CASE_010_DUPLICATE_BANK_IMPORT"
+ },
+ {
+  "item": "11",
+  "scenario_id": "NORMAL_NAME_MATCH_1"
+ },
+ {
+  "item": "12",
+  "scenario_id": "NORMAL_NAME_MATCH_2"
+ },
+ {
+  "item": "13",
+  "scenario_id": "NORMAL_NAME_MATCH_3"
+ },
+ {
+  "item": "14",
+  "scenario_id": "NORMAL_NAME_MATCH_4"
+ },
+ {
+  "item": "15",
+  "scenario_id": "NORMAL_UNKNOWN_SENDER_1"
+ },
+ {
+  "item": "16",
+  "scenario_id": "NORMAL_UNKNOWN_SENDER_2"
+ },
+ {
+  "item": "17",
+  "scenario_id": "NORMAL_UNKNOWN_SENDER_3"
+ },
+ {
+  "item": "18",
+  "scenario_id": "ROUTINE_EXACT_1"
+ },
+ {
+  "item": "19",
+  "scenario_id": "ROUTINE_EXACT_2"
+ },
+ {
+  "item": "20",
+  "scenario_id": "ROUTINE_EXACT_3"
+ },
+ {
+  "item": "21",
+  "scenario_id": "ROUTINE_EXACT_4"
+ },
+ {
+  "item": "22",
+  "scenario_id": "ROUTINE_OVERDUE_1"
+ },
+ {
+  "item": "23",
+  "scenario_id": "ROUTINE_OVERDUE_2"
+ },
+ {
+  "item": "24",
+  "scenario_id": "ROUTINE_OVERDUE_3"
+ }
+]

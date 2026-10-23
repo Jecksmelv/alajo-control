@@ -1,0 +1,22 @@
+# Alajo Control — Python dependencies (Python 3.11+; tested on 3.12)
+# Install into a virtual environment named .venv in this folder:
+#   python -m venv .venv
+#   .venv\Scripts\python -m pip install -r requirements.txt      (Windows)
+#   .venv/bin/python -m pip install -r requirements.txt          (macOS / Linux)
+
+# Agents: PydanticAI with the OpenAI-compatible client (used through the Portkey gateway)
+pydantic-ai-slim[openai]==2.55.0
+openai==3.37.0
+pydantic==2.14.1
+python-dotenv==1.2.4
+
+# API
+fastapi==0.143.0
+uvicorn[standard]==0.54.0
+
+# Tests
+pytest==9.1.1
+httpx==0.28.1
+
+# Optional: real screenshots of the running app (scripts/capture_screenshots.py)
+playwright==1.64.1

@@ -1,0 +1,9 @@
+plan_id,name,frequency,contribution_amount,cycle_length,fee_contributions,payout_logic
+DAILY-1000,Daily Ajo,daily,1000,31,1,"31 daily contributions; 30 paid out, 1 retained as service fee"
+DAILY-2000,Market Daily,daily,2000,31,1,"31 daily contributions; 30 paid out, 1 retained as service fee"
+DAILY-5000,Trader Daily,daily,5000,31,1,"31 daily contributions; 30 paid out, 1 retained as service fee"
+WEEKLY-5000,Weekly Thrift,weekly,5000,12,0,12 weekly contributions paid out in full at cycle end
+WEEKLY-10000,Weekly Thrift Plus,weekly,10000,12,0,12 weekly contributions paid out in full at cycle end
+WEEKLY-20000,Weekly Business,weekly,20000,12,0,12 weekly contributions paid out in full at cycle end
+MONTHLY-50000,Rent Target,monthly,50000,12,0,12 monthly contributions paid out at the rent date
+MONTHLY-30000,School Fees Target,monthly,30000,4,0,4 monthly contributions paid out before the school-fee date

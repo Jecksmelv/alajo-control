@@ -1,0 +1,26 @@
+# secrets
+.env
+.env.*
+!.env.example
+
+# python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# runtime state (rebuilt by Reset Demo / first start)
+data/
+
+# frontend
+frontend/node_modules/
+frontend/dist/
+frontend/*.tsbuildinfo
+frontend/node_modules/.tmp/
+
+# os / editors
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+.pytest_cache/
