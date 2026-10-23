@@ -47,6 +47,7 @@ export default function Liquidity() {
                   <span className={'badge ' + (b.grounding?.grounded ? 'b-ok' : 'b-warn')}>{b.grounding?.grounded ? `all ${b.grounding.amounts_found} figures traced to tools` : 'unverified figure detected'}</span>
                   {b.run_id && <a href={`#/trace/${b.run_id}`}>trace →</a>}
                 </div>
+                {b.figures_basis_gap != null && b.figures_basis_gap !== p.payout_gap && <div className="small warn-text" style={{ marginTop: 8 }}>Written when the gap was {naira(b.figures_basis_gap)}; approvals since then changed it to {naira(p.payout_gap)}. Click Refresh explanation.</div>}
               </>
             ) : <div className="small muted">The agent explains the projection using only figures returned by the liquidity tools. It never does the arithmetic.</div>}
           </div>

@@ -395,6 +395,7 @@ async def morning_review(requested_by: str = "ops.manager", language_style: str 
             lb = liq.model_dump()
             lb["grounding"] = grounding_check(lb["headline"] + " " + lb["explanation"], deps.tool_outputs)
             lb["run_id"] = deps.run_id
+            lb["figures_basis_gap"] = summary["potential_payout_gap"]["amount"]
             set_state(conn, "liquidity_brief", lb)
         if triage is not None:
             set_state(conn, "triage_report", {**triage.model_dump(), "run_id": deps.run_id})

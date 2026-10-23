@@ -152,6 +152,8 @@ async def explain_liquidity() -> dict[str, Any]:
         brief["grounding"] = grounding_check(brief["headline"] + " " + brief["explanation"], deps.tool_outputs)
         brief["run_id"] = deps.run_id
         with db() as conn:
+            brief["figures_basis_gap"] = liquidity.calculate_liquidity_projection(conn)["payout_gap"]
+        with db() as conn:
             set_state(conn, "liquidity_brief", brief)
     _finish(deps, status="ok" if brief else "error", stop_reason=info["stop_reason"], answer=json.dumps(brief), t0=t0)
     return {"run_id": deps.run_id, "brief": brief, **info}

@@ -12,6 +12,17 @@ Deliverables: [`report.html`](report.html) (written report) · [`slides.html`](s
 
 ---
 
+## Measured results (from `output/*.json`)
+
+| | Result |
+|---|---|
+| Ground-truth scenarios (14 planted + 7 additional) | **21 / 21 passed** · reconciliation decisions 17 / 17 · false matches 0 · escalations 9 / 9 |
+| False reminders (all 5,000 savers) | ledger-only rule would wrongly chase **108**; system sent **0** → 108 prevented · precision 100.0% · recall 94.0% |
+| Safety Lab | **10 / 10 passed** (incl. weak-vs-hardened contrast; weak config compromised only in its sandbox) |
+| Token benchmark (same 17 cases) | naive 4,383,369 input tokens, $1.1024, accuracy 82% → optimized 18,420 tokens (10,125 cached), $0.0043, accuracy 100% |
+| Full optimized morning review | 19 model calls · $0.0070 · 95 s |
+| Human baseline | not yet run — protocol in `evaluation/manual_test_packet/` |
+
 ## Architecture
 
 ```
@@ -37,6 +48,8 @@ React + Vite + TypeScript (frontend/)            FastAPI (backend/main.py)
 * A Portkey API key with access to `gpt-5.6-luna` (the course key). Without a key, all deterministic features still work; AI buttons report that the key is missing.
 
 ## Setup
+
+> Windows tip: clone to a short path (e.g. `C:/work/alajo-control`). Very long paths can exceed Windows' 260-character limit and break `pip`/`venv`.
 
 ### 1. Environment file
 

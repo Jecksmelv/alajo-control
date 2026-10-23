@@ -90,6 +90,10 @@ SF = load("safety_results.json")
 MB = load("manual_benchmark.json")
 UL = load("usage_log.json")
 
+from backend.database import connect as _connect  # noqa: E402
+_rc = _connect(REAL_DB)
+P_after = calculate_liquidity_projection(_rc)
+_rc.close()
 real = sqlite3.connect(REAL_DB)
 real.row_factory = sqlite3.Row
 spouse_case = dict(real.execute("SELECT * FROM reconciliation_cases WHERE case_type='PROBABLE_MATCH' AND title LIKE '%Musa%'").fetchone())
@@ -424,7 +428,8 @@ code {{ font-family:"IBM Plex Mono",Consolas,monospace; font-size:12px; backgrou
 <li><b>Deterministic tools.</b> No exact reference, so rule R1 does not post it. Candidate generation finds {sp_cands['candidate_count_same_amount']} open contributions with the same outstanding amount; only one has a supporting signal: Aisha's own message names the sender (signal score {sp_top['signal_score']}; sender-name signal “{sp_top['sender_name_signal']}”). The engine opens case {spouse_case['case_id']} (priority <i>{spouse_case['priority']}</i>, because she has a payout due next week) and suppresses her overdue reminder.</li>
 <li><b>Specialist.</b> Money Match receives only the compact evidence and returns <i>{esc(sp_dec.get('decision', '—'))}</i> for {esc(sp_dec.get('customer_id'))} / {esc(sp_dec.get('expected_contribution_id'))} with confidence {sp_dec.get('confidence', 0):.2f}. Evidence cited:<ul>{mm_evidence}</ul>The code validator accepts it (candidate is valid) and attaches the matched amount {N(sp_dec.get('matched_amount'))} from SQL.</li>
 <li><b>Supervisor / action.</b> An approval request <span class="mono">{esc(sp_appr.get('approval_id', '—'))}</span> is created — “{esc(sp_appr.get('reason_required', ''))}”. No ledger change happens.</li>
-<li><b>Approval.</b> The operator clicks Approve. The endpoint re-verifies and posts {N(sp_exec.get('ledger_amount'))} to {esc(sp_exec.get('contribution_id'))} (status: {esc(sp_exec.get('contribution_status'))}), closes the case and queues acknowledgment <span class="mono">{esc(sp_ack.get('message_id', '—'))}</span>: “{esc((sp_ack.get('content') or ''))}”.</li>
+<li><b>Approval.</b> The operator clicks Approve. The endpoint re-verifies and posts {N(sp_exec.get('ledger_amount'))} to {esc(sp_exec.get('contribution_id'))} (status: {esc(sp_exec.get('contribution_status'))}), closes the case (and Aisha's overdue case), and queues acknowledgment <span class="mono">{esc(sp_ack.get('message_id', '—'))}</span>: “{esc((sp_ack.get('content') or ''))}”.</li>
+<li><b>Liquidity effect.</b> The ₦20,000 left suspense and became available cash, so the deterministic projection immediately moved Friday's gap from {N(gap)} to {N(P_after['payout_gap'])} (screens captured after the approval show the new figure).</li>
 <li><b>Audit.</b> The events for this case are in the hash-chained trail ({n(chain_n)} events, chain verified):<br/>{'<br/>'.join(f"<span class='mono'>#{e['seq']} {e['ts'][11:19]} UTC · {e['event_type']} · {esc(e['actor'])} · {esc(_ev_label(e))}</span>" for e in sp_events)}</li>
 </ol>
 {figure('05_spouse_case_approved.jpg', 'After approval: Money Match judgment with its evidence, matched amount from SQL, approval recorded with the human actor, acknowledgment queued.')}
