@@ -41,10 +41,22 @@ React + Vite + TypeScript (frontend/)            FastAPI (backend/main.py)
 * **AI only where judgment is needed.** Money Match receives compact evidence for the few genuinely ambiguous transfers; Exception & Risk triages; Liquidity explains a deterministic 7-day projection; Customer Action chooses safe next steps. The Supervisor delegates and synthesizes. Every agent has its own prompt, tools and structured output.
 * **Code-level controls.** `backend/safety.py` classifies every action as auto-allowed, approval-required or forbidden; `backend/tools/actions.py` refuses ineligible reminders and executes material actions only inside the human approval endpoint; SQLite triggers make the ledger and audit log append-only. Customer text is sanitized and treated as data; sensitive fields never reach a model; naira figures in answers are checked against tool outputs.
 
+## Quick start (recommended for graders: Python only, one command)
+
+The built web interface is committed in `frontend/dist/`, so **Node.js is not needed** to run the app.
+
+1. Make sure `PORTKEY_API_KEY` is in a `.env` file in this folder **or in the folder above it** (see `.env.example`).
+2. From this folder, run **one** command:
+   * Windows: double-click `start.bat`, or run `start.bat` in a terminal
+   * macOS / Linux: `bash start.sh`
+3. When it prints *“Open http://localhost:8000”*, open **http://localhost:8000** in your browser.
+
+The script creates `.venv`, installs `requirements.txt` (about a minute the first time), builds the deterministic demo day automatically on first start, and serves the whole app on port 8000. Press Ctrl+C to stop. The manual steps below do the same thing by hand, and the Node/Vite path is only needed to modify the frontend.
+
 ## Prerequisites
 
 * Python **3.11+** (tested with 3.12)
-* Node.js **20+** and npm (tested with Node 24)
+* Node.js **20+** and npm (tested with Node 24) — only for frontend development; not needed to run the app
 * A Portkey API key (the course key, which may only be used with `gpt-6-luna`, the default model). Without a key, all deterministic features still work; AI buttons report that the key is missing.
 
 ## Setup
@@ -68,7 +80,7 @@ python -m venv .venv
 .venv/bin/python -m pip install -r requirements.txt         # macOS / Linux
 ```
 
-### 3. Frontend
+### 3. Frontend (optional — only for frontend development)
 
 ```bash
 cd frontend
@@ -87,7 +99,9 @@ This rebuilds `data/alajo.db` from a fixed seed (about 4 seconds), runs the dete
 
 ## Run
 
-Terminal 1 — backend (from the project root):
+**Without Node (same as Quick start):** run only the backend command below and open **http://localhost:8000** — it serves the committed frontend build.
+
+**Frontend development (hot reload):** Terminal 1 — backend (from the project root):
 
 ```bash
 .venv/Scripts/python -m uvicorn backend.main:app --port 8000     # Windows
@@ -102,7 +116,7 @@ npm run dev
 ```
 
 Open **http://localhost:5173**. The API is at http://localhost:8000/api (e.g. `/api/health`, `/api/summary`).
-Single-port alternative: `cd frontend && npm run build`, then the backend also serves the built UI at http://localhost:8000.
+After changing frontend code, run `cd frontend && npm run build` so the committed build in `frontend/dist/` (served at http://localhost:8000) stays current.
 
 ## 5-Minute Demo
 
@@ -148,7 +162,7 @@ Tests cover financial calculations, exact reconciliation, duplicate detection, r
 
 ```
 alajo-control/
-├── README.md  report.html  slides.html  requirements.txt  .env.example  .gitignore
+├── README.md  report.html  slides.html  requirements.txt  .env.example  .gitignore  start.bat  start.sh
 ├── backend/
 │   ├── main.py            FastAPI routes (approval endpoint = only path that executes material actions)
 │   ├── config.py          paths, .env lookup (project dir, then parent), model + policy limits

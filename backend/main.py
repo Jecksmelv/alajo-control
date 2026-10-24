@@ -340,7 +340,7 @@ if config.FRONTEND_DIST.is_dir():
 
     @app.get("/{path:path}")
     def spa(path: str):
-        f = config.FRONTEND_DIST / path
-        if path and f.is_file():
+        f = (config.FRONTEND_DIST / path).resolve()
+        if path and f.is_file() and config.FRONTEND_DIST.resolve() in f.parents:
             return FileResponse(f)
         return FileResponse(config.FRONTEND_DIST / "index.html")
