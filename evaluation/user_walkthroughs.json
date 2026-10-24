@@ -1,0 +1,30 @@
+{
+ "_note": "Real-user walkthrough notes reported by the reviewers themselves (October 2026). Informal walkthroughs, not a formal timed study; the two sessions were not identical. Feedback fields hold verbatim excerpts of the reviewers' own written feedback.",
+ "walkthroughs": [
+  {
+   "reviewer": "Melvin Oshomegie",
+   "role": "Alajo co-founder (project author)",
+   "minutes": 4,
+   "session": "Quick walkthrough: checked recommendations on the reconciliation and approval screens, including the spouse-account payment, an agent discrepancy and a held reminder",
+   "feedback": [
+    "The recommendations generally matched the decisions I would have made myself.",
+    "What I liked most was that the system did not treat every mismatch as a customer problem.",
+    "I would not want a customer who had already paid to receive a late-payment message simply because the payment had not yet been reconciled.",
+    "The “Why?” evidence view gave me enough information to judge the recommendation rather than simply trusting the AI.",
+    "I do not have a reliable historical time study, so I would not claim an exact number of hours saved, but a 4-minute prioritized review is materially different from manually reconstructing each case across separate records."
+   ]
+  },
+  {
+   "reviewer": "Former Alajo co-founder",
+   "role": "Former Alajo co-founder",
+   "minutes": 10,
+   "session": "Review of the Morning Control Room, reconciliation cases, approval queue, held reminders and the liquidity view",
+   "feedback": [
+    "Instead of showing an operations person every transaction and expecting them to find the problems, Alajo Control surfaced the cases that actually needed attention and explained why they were flagged.",
+    "The held-reminder feature was particularly useful because it reduces the risk of contacting customers incorrectly when there is evidence that they may already have paid.",
+    "The liquidity view was also useful because it connected individual reconciliation issues to the broader question of whether upcoming customer payouts were adequately covered.",
+    "That made the product feel more like an operations control system than simply a transaction dashboard."
+   ]
+  }
+ ]
+}

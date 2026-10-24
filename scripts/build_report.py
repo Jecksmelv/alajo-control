@@ -89,6 +89,13 @@ TB = load("token_benchmark.json")
 SF = load("safety_results.json")
 MB = load("manual_benchmark.json")
 UL = load("usage_log.json")
+WT = json.loads((PROJECT_DIR / "evaluation" / "user_walkthroughs.json").read_text(encoding="utf-8"))["walkthroughs"]
+_has_fb = any(w["feedback"] for w in WT)
+wt_rows = "".join(
+    f"<tr><td><b>{esc(w['role'])}</b></td><td>{esc(w['session'])}</td><td class='num'>about {w['minutes']} min</td>"
+    + (f"<td>{'<br/>'.join('“' + esc(f) + '”' for f in w['feedback']) or '—'}</td>" if _has_fb else "") + "</tr>"
+    for w in WT)
+wt_head = "<tr><th>Reviewer</th><th>Session</th><th class='num'>Time observed</th>" + ("<th>Their feedback (own words)</th>" if _has_fb else "") + "</tr>"
 
 from backend.database import connect as _connect  # noqa: E402
 _rc = _connect(REAL_DB)
@@ -551,6 +558,10 @@ code {{ font-family:"IBM Plex Mono",Consolas,monospace; font-size:12px; backgrou
 {figure('13_safety_lab.jpg', 'Safety Lab: the live prompt-injection and social-engineering tests against the weak and hardened configurations.', 'half')}
 
 <h2 id="s7"><span class="no">7</span>Impact</h2>
+<h3>Real-user walkthroughs</h3>
+<p>Two people who have run Alajo's operations used the working app in October 2026: the author, as Alajo's co-founder, and a former Alajo co-founder. These were informal sessions, not a formal timed study; the two reviewers did not follow an identical script and their observations differ.</p>
+<table class="compact"><thead>{wt_head}</thead><tbody>{wt_rows}</tbody></table>
+<p><b>What this shows.</b> In the author's 4-minute walkthrough, the prioritized exceptions, the assembled evidence behind each recommendation and the approval queue were enough to judge real cases — including the spouse-account payment, an agent discrepancy and a held reminder — without reconstructing them record by record. This matches the operating experience behind the project: the hard part of running Alajo was rarely recording savings; it was working out what actually happened when the ledger, payment records, agent information and the customer's explanation did not line up, before deciding whether to contact a customer, correct something internally or escalate. Consolidating that evidence into one case view, ranking exceptions and suppressing reminders where payment evidence exists is why we expect Alajo Control to reduce manual operational work. The former co-founder's 10-minute review was a separate session that also covered the Morning Control Room and the liquidity view; what stood out to her was the prioritization — surfacing only the cases that need attention and explaining why — and the link from individual reconciliation issues to whether upcoming payouts are covered. Both reviewers, writing separately, named the same next step: connecting the workflow to live payment-provider, bank and messaging feeds. We have no formal historical time study, so the walkthrough times are <i>not</i> converted into hours saved; both reviewers are Alajo insiders (one is the author), so this is domain-expert evidence rather than an independent user study.</p>
 <h3>Operational impact on the demo morning (measured from the app)</h3>
 <div class="kpis">
  <div class="kpi g"><div class="l">Overnight records to check</div><div class="v">{n(records_in)} → {n(human_items)}</div><div class="s">bank, provider, agent and message records vs. open exceptions left for a human ({pct(work_reduction)} fewer items)</div></div>
@@ -559,7 +570,7 @@ code {{ font-family:"IBM Plex Mono",Consolas,monospace; font-size:12px; backgrou
  <div class="kpi r"><div class="l">Payout risk surfaced early</div><div class="v">{N(gap)}</div><div class="s">gap before {fri['payouts']} payouts ({N(fri['amount'])}) on {datetime.fromisoformat(P['gap_date']).strftime('%a %d %b')}, two days ahead</div></div>
 </div>
 <p>Money protected on one morning: {N(dup_amt)} of double credits blocked (duplicate receipt and duplicate bank import), a {N(short_amt)} field-agent cash shortfall caught before the collections were credited, and a {N(delayed_amt)} late provider settlement escalated before Friday's payouts. Reminders went only to verified arrears, so savers who had already paid were not chased.</p>
-<p><b>Illustrative time estimate (assumptions, not measurements).</b> To turn the measured workload into hours, assume an analyst needs a fixed number of minutes to check each overnight record by hand, more time to investigate each exception, and less time to review an exception when the evidence is already assembled. The ranges below are assumptions; the manual packet below exists to replace them with a measured number.</p>
+<p><b>Modeled time estimate (assumptions, not measurements; not derived from the walkthroughs).</b> To turn the measured workload into hours, assume an analyst needs a fixed number of minutes to check each overnight record by hand, more time to investigate each exception, and less time to review an exception when the evidence is already assembled. The ranges below are assumptions; the manual packet below exists to replace them with a measured number.</p>
 <table class="compact est"><thead><tr><th>Case</th><th class="num">Min / record, manual</th><th class="num">Min / exception, manual</th><th class="num">Min / exception, with system</th><th class="num">Hours / day, manual</th><th class="num">Hours / day, with system</th><th class="num">Saved / day</th><th class="num">Saved / year (260 days)</th></tr></thead><tbody>{est_rows}</tbody></table>
 <h3>Decision quality against ground truth</h3>
 <p>Because the dataset is synthetic, every planted scenario has a known correct outcome, stored only in <code>evaluation/ground_truth.json</code> and never shown to agents. The evaluation (<code>python -m evaluation.run_evaluation</code>) resets the demo, runs the full optimized morning review with live {esc(config.MODEL_NAME)} calls, attempts the CASE_013 balance change through Ask, then scores each scenario from database state.</p>
@@ -573,12 +584,13 @@ code {{ font-family:"IBM Plex Mono",Consolas,monospace; font-size:12px; backgrou
 <h3>False reminders across the whole book</h3>
 <p>The most visible trust failure is a reminder to someone who has paid. Across all 5,000 savers, a ledger-only rule (exact matches posted, then chase everyone still unpaid after the grace day) would have reminded {n(pop['customers_ledger_shows_overdue'])} customers, {n(pop['ledger_only_false_reminders'])} of whom had in fact paid (spouse and unreferenced transfers, provider settlements in transit or late, held agent cash). Alajo Control sent {n(pop['reminders_sent'])} reminders, <b>{n(pop['system_false_reminders'])} to customers who had paid</b> — {n(pop['false_reminders_prevented'])} false reminders prevented. It reached {n(pop['genuine_overdue_reminded'])} of the genuinely overdue customers (recall {pct(pop['genuine_overdue_recall_rate'])}, precision {pct(pop['reminder_precision_rate'])}); the remainder were deliberately held because an unresolved transfer or a payment claim names them — a conservative choice that trades a day's delay for trust.</p>
 <p><b>Safe actions.</b> {M['safe_actions']['detail']}; {M['safe_actions']['display']} unsafe automated actions. The evaluation then approved the spouse match as a human and confirmed the ledger moved from {N(EV['approval_path_check'].get('paid_before'))} to {N(EV['approval_path_check'].get('paid_after'))} exactly once.</p>
-<p><b>Manual-vs-system workflow.</b> A {MB['items'] if MB else 24}-item packet with the same raw evidence, a timing protocol and a scoring script is in <code>evaluation/manual_test_packet/</code>. The system's measured time for the 17 hardest items (including the deterministic run over the whole day) was {MB['system_seconds'] if MB else '—'} seconds. <b>No human timing test has been performed</b>, so this report makes no claim about human time saved; the packet exists so that claim can be measured rather than assumed.</p>
+<p><b>Manual-vs-system workflow.</b> A {MB['items'] if MB else 24}-item packet with the same raw evidence, a timing protocol and a scoring script is in <code>evaluation/manual_test_packet/</code>. The system's measured time for the 17 hardest items (including the deterministic run over the whole day) was {MB['system_seconds'] if MB else '—'} seconds. <b>No formal timed manual test has been performed</b> beyond the two informal walkthroughs above, so this report makes no measured claim about human time saved; the packet exists so that claim can be measured rather than assumed.</p>
 
 <h2 id="s8"><span class="no">8</span>Limits + next steps</h2>
 <div class="two tight"><div>
 <h3>Limits</h3>
 <ul>
+<li><b>Limited user evidence.</b> Two informal walkthroughs by Alajo co-founders (about 4 and about 10 minutes); no independent operator study or formal time study yet.</li>
 <li><b>Synthetic data.</b> The operating day is generated, not historical; real reconciliation noise (bank narration formats, provider file quirks, agent behaviour) will be messier.</li>
 <li><b>Simulated integrations.</b> The outbox does not send WhatsApp/SMS, the provider feed is simulated, and there is no real bank or funds movement.</li>
 <li><b>Heuristic candidate generation.</b> Name and message signals are simple token rules; transliterations, nicknames and shared family accounts need a stronger entity-resolution model.</li>
@@ -588,7 +600,7 @@ code {{ font-family:"IBM Plex Mono",Consolas,monospace; font-size:12px; backgrou
 <li><b>Scale and security.</b> Tested on one 5,000-saver day on a laptop; no authentication or role model; SQLite rather than a production database.</li>
 </ul></div><div>
 <h3>Next steps</h3>
-<ul><li>Connect real payment-provider and bank statement APIs; keep the deterministic engine as the first pass.</li>
+<ul><li>Connect real payment-provider and bank statement APIs and customer messaging, so exceptions are created and resolved continuously (the next step both walkthrough reviewers named); keep the deterministic engine as the first pass.</li>
 <li>WhatsApp Business integration for the outbox and for structured customer replies (e.g. reference confirmation).</li>
 <li>A pilot with an operator's team, running the manual-vs-system protocol to measure real time saved and error rates.</li>
 <li>A stronger entity-resolution model for sender names and family accounts, evaluated continuously on labelled cases.</li>
@@ -649,10 +661,11 @@ slides_list = [
 <p class="mut small">List prices{cite('openai')}; naive = raw dumps, one call per case; optimized = deterministic first, compact evidence, cached prefix.</p></div></div>"""),
     slide(f"""<h2>Safety + impact — measured</h2><div class="cols"><div><div class="stat"><span>{sf_pass}/{sf_total}</span> red-team tests passed</div>
 <p>Social-engineering attack — weak config: {esc(('called ' + ', '.join(sorted({c['tool'] for c in soc['weak']['tool_calls']})) + ' (sandbox only)') if soc['weak']['compromised'] else 'did not act in this run')}. Hardened: ledger unchanged, {len([t for t in soc['hardened']['tool_calls'] if t.get('status') == 'blocked'])} attempt(s) blocked by code.</p>
-<p class="mut small">Also: injection, agent-note override, unapproved balance change, privacy, prompt/key extraction, tool failure, loop, direct DB tampering.</p></div>
+<p class="mut small">Also: injection, agent-note override, unapproved balance change, privacy, prompt/key extraction, tool failure, loop, direct DB tampering.</p>
+<p><b>Real users:</b> two Alajo co-founders used the working app (about {WT[0]['minutes']} and about {WT[1]['minutes']} min, informal walkthroughs) — “a 4-minute prioritized review is materially different from manually reconstructing each case across separate records.”</p></div>
 <div><div class="stat"><span>{EV['summary']['passed']}/{EV['summary']['total']}</span> ground-truth scenarios</div><div class="stat"><span>{n(pop['false_reminders_prevented'])}</span> false reminders prevented ({n(pop['system_false_reminders'])} sent)</div><div class="stat"><span>{n(records_in)} → {n(human_items)}</span> overnight records vs. items left for a human</div><div class="stat"><span>{N(gap)}</span> payout gap flagged two days early</div></div></div>"""),
     slide(f"""<h2>Why it matters · next step</h2><div class="cols"><div><p class="lead small">Community savings is a trust business; the ledger is the record of that trust. Alajo Control keeps it true at scale — for about {usd(mr['cost_usd'], 3)} of AI per morning.</p>
-<p><b>Limits:</b> synthetic data · simulated WhatsApp &amp; provider feeds · heuristic name matching · no human timing test yet.</p></div>
+<p><b>Limits:</b> synthetic data · simulated WhatsApp &amp; provider feeds · heuristic name matching · informal co-founder walkthroughs only, no formal time study yet.</p></div>
 <div class="card accent"><h3>Next</h3><ul><li>Pilot with an operator's ops team; run the manual-vs-system protocol</li><li>Real provider + bank statement APIs; WhatsApp Business outbox</li><li>Stronger entity resolution; continuous evaluation</li><li>Yoruba, Hausa, Igbo communication</li></ul></div></div>
 <div class="foot">github.com/Jecksmelv/alajo-control · report.html for methods, sources and full results</div>""", "dark"),
 ]
