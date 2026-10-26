@@ -407,7 +407,7 @@ figure.half img {{ max-height:420px; object-fit:cover; object-position:top; }}
 code {{ font-family:"IBM Plex Mono",Consolas,monospace; font-size:12px; background:#f4efe5; padding:1px 5px; border-radius:4px; }}
 @page {{ margin: 10mm 11mm; }}
 @media print {{ body {{ background:#fff; font-size:9.6pt; line-height:1.38; }} .page {{ box-shadow:none; padding:0; max-width:none; }}
- .cover {{ margin:0; padding:34px 30px 28px; -webkit-print-color-adjust:exact; print-color-adjust:exact; }} .cover h1 {{ font-size:36px; }}
+ .cover {{ margin:0; padding:20px 26px 16px; -webkit-print-color-adjust:exact; print-color-adjust:exact; }} .cover h1 {{ font-size:32px; margin:10px 0 4px; }} .cover .meta {{ margin-top:14px; line-height:1.6; }} .cover .mark {{ width:40px; height:40px; font-size:16px; }}
  h2 {{ margin:20px 0 8px; padding-top:10px; font-size:17pt; break-after:avoid; }} h3 {{ break-after:avoid; margin:14px 0 6px; }}
  figure {{ margin:8px 0 10px; break-inside:avoid; }} figure img {{ max-height:72mm; object-fit:contain; box-shadow:none; }} .two figure img {{ max-height:44mm; }}
  figcaption {{ font-size:8pt; }} table {{ font-size:8.4pt; }} td, th {{ padding:4px 6px; }} table.compact {{ font-size:7.8pt; }}
@@ -423,7 +423,7 @@ code {{ font-family:"IBM Plex Mono",Consolas,monospace; font-size:12px; backgrou
  <div class="meta">
   <b>MGT 409 — AI Foundations for Managers · Final Project</b><br/>
   Melvin Oshomegie · Yale School of Management · October 2026<br/>
-  Repository: <span style="color:#fff">https://github.com/Jecksmelv/alajo-control</span> · run locally per README (http://localhost:5173)<br/>
+  <span style="display:block;margin:10px 0 6px;font-size:16px;color:#fff"><b>GitHub repository (public):</b> <a href="https://github.com/Jecksmelv/alajo-control" style="color:#7fe0c0">https://github.com/Jecksmelv/alajo-control</a></span>Clone it, then run <code style="background:rgba(255,255,255,.12);color:#fff">start.bat</code> (Windows) or <code style="background:rgba(255,255,255,.12);color:#fff">bash start.sh</code> (macOS/Linux) and open http://localhost:8000 — see README<br/>
   Model: {esc(config.MODEL_NAME)} via Portkey · Stack: React + Vite + TypeScript · FastAPI · PydanticAI · SQLite
  </div>
 </section>
@@ -629,6 +629,7 @@ def slide(inner: str, cls: str = "") -> str:
 slides_list = [
     slide(f"""<div class="mark">AC</div><h1>Alajo Control</h1><div class="sub">AI operations control tower for community savings</div>
 <p class="lead">Most digital savings products solve the digitization problem.<br/>Alajo Control solves the <b>truth-and-action</b> problem that comes after.</p>
+<p class="repo" style="font-size:22px;margin-top:34px;color:#e6ecf5"><b>GitHub (public):</b> <a href="https://github.com/Jecksmelv/alajo-control" style="color:#7fe0c0">https://github.com/Jecksmelv/alajo-control</a></p>
 <div class="foot">Melvin Oshomegie · MGT 409 Final Project · Yale SOM · Oct 2026</div>""", "dark"),
     slide(f"""<h2>The problem</h2>
 <p class="frame">Many Nigerian traders and households earn money in small, irregular amounts. Banks were often hard to reach, inconvenient, or poorly suited to saving small sums every day.</p>
